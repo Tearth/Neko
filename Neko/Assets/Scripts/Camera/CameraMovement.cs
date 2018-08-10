@@ -11,14 +11,14 @@ public class CameraMovement : MonoBehaviour
     private Vector3 _targetPosition;
     private float _targetFieldOfView;
 
-    private void Start ()
+    private void Start()
     {
         _camera = gameObject.GetComponent<Camera>();
         _targetPosition = gameObject.transform.position;
         _targetFieldOfView = _camera.fieldOfView;
     }
 
-    private void Update ()
+    private void Update()
     {
         Input();
     }
