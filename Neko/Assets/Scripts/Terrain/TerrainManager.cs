@@ -11,6 +11,11 @@ public class TerrainManager : MonoBehaviour
     public float PerlinNoiseScale;
     public GameObject Chunk;
 
+    private Vector2 TotalVoxelsCount
+    {
+        get { return new Vector2(ChunksCount.x * ChunkSize, ChunksCount.y * ChunkSize); }
+    }
+
     private TerrainGenerator _terrainGenerator;
     private VoxelBuilder _voxelBuilder;
 
@@ -22,10 +27,7 @@ public class TerrainManager : MonoBehaviour
 
     private void Start()
     {
-        var totalVoxelsLength = (int)(ChunksCount.x * ChunkSize);
-        var totalVoxelsWidth = (int)(ChunksCount.y * ChunkSize);
-
-        var terrain = _terrainGenerator.Generate(totalVoxelsLength, totalVoxelsWidth, SpaceHeight, BaseTerrainHeight, MaxTerrainHeight, PerlinNoiseScale);
+        var terrain = _terrainGenerator.Generate((int)TotalVoxelsCount.x, (int)TotalVoxelsCount.y, SpaceHeight, BaseTerrainHeight, MaxTerrainHeight, PerlinNoiseScale);
 
         foreach (Transform child in gameObject.transform)
         {
@@ -65,12 +67,14 @@ public class TerrainManager : MonoBehaviour
 
                     if (voxelData)
                     {
+                        var visibilityData = IsVoxelVisible(terrainOffsetX + x, terrainOffsetY + y, z, terrain);
+
                         _voxelBuilder.Position = new Vector3(x, z, y);
-                        _voxelBuilder.TopFace = true;
-                        _voxelBuilder.FrontFace = true;
-                        _voxelBuilder.BackFace = true;
-                        _voxelBuilder.RightFace = true;
-                        _voxelBuilder.LeftFace = true;
+                        _voxelBuilder.TopFace = visibilityData.Top;
+                        _voxelBuilder.FrontFace = visibilityData.Front;
+                        _voxelBuilder.BackFace = visibilityData.Back;
+                        _voxelBuilder.RightFace = visibilityData.Right;
+                        _voxelBuilder.LeftFace = visibilityData.Left;
                         _voxelBuilder.TextureType = TextureType.Dirt;
                         _voxelBuilder.GenerateAndAddToLists(vertices, triangles, uv);
                     }
@@ -84,5 +88,17 @@ public class TerrainManager : MonoBehaviour
         mesh.triangles = triangles.ToArray();
         mesh.uv = uv.ToArray();
         mesh.RecalculateNormals();
+    }
+
+    private VoxelVisibilityData IsVoxelVisible(int x, int y, int z, bool[,,] terrain)
+    {
+        return new VoxelVisibilityData
+        {
+            Top   = !terrain[x, y, z + 1],
+            Front = y == (int)TotalVoxelsCount.y - 1 || !terrain[x, y + 1, z],
+            Back  = y == 0                       || !terrain[x, y - 1, z],
+            Right = x == (int)TotalVoxelsCount.x - 1 || !terrain[x + 1, y, z],
+            Left  = x == 0                       || !terrain[x - 1, y, z]
+        };
     }
 }
