@@ -155,10 +155,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ChunkSize: 16
   ChunksCount: {x: 8, y: 8}
-  SpaceHeight: 20
+  SpaceHeight: 30
   BaseTerrainHeight: 2
-  MaxTerrainHeight: 10
-  PerlinNoiseScale: 3
+  MaxTerrainHeight: 25
+  PerlinNoiseScale: 6
   Chunk: {fileID: 1274874719352104, guid: 1e5108a9373b4fe4aaf73ed512926528, type: 2}
 --- !u!1 &559858981
 GameObject:
@@ -173,7 +173,7 @@ GameObject:
   - component: {fileID: 559858985}
   m_Layer: 0
   m_Name: Camera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -185,7 +185,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 559858981}
   m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: 0, y: 80, z: -5}
+  m_LocalPosition: {x: 70, y: 27.5, z: 25.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1189297483}

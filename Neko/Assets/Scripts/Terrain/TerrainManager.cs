@@ -11,6 +11,8 @@ public class TerrainManager : MonoBehaviour
     public float PerlinNoiseScale;
     public GameObject Chunk;
 
+    private bool[,,] _terrain;
+
     private Vector2 TotalVoxelsCount
     {
         get { return new Vector2(ChunksCount.x * ChunkSize, ChunksCount.y * ChunkSize); }
@@ -27,8 +29,17 @@ public class TerrainManager : MonoBehaviour
 
     private void Start()
     {
-        var terrain = _terrainGenerator.Generate((int)TotalVoxelsCount.x, (int)TotalVoxelsCount.y, SpaceHeight, BaseTerrainHeight, MaxTerrainHeight, PerlinNoiseScale);
+        _terrain = _terrainGenerator.Generate((int)TotalVoxelsCount.x, (int)TotalVoxelsCount.y, SpaceHeight, BaseTerrainHeight, MaxTerrainHeight, PerlinNoiseScale);
+        RegenerateTerrain();
+    }
 
+    private void Update()
+    {
+        HandleMouseClick();
+    }
+
+    private void RegenerateTerrain()
+    {
         foreach (Transform child in gameObject.transform)
         {
             Destroy(child.gameObject);
@@ -38,17 +49,12 @@ public class TerrainManager : MonoBehaviour
         {
             for (var y = 0; y < ChunksCount.y; y++)
             {
-                BuildChunk(x, y, terrain);
+                BuildChunk(x, y);
             }
         }
     }
 
-    private void Update()
-    {
-
-    }
-
-    private void BuildChunk(int chunkX, int chunkY, bool[,,] terrain)
+    private void BuildChunk(int chunkX, int chunkY)
     {
         var vertices = new List<Vector3>();
         var triangles = new List<int>();
@@ -63,11 +69,11 @@ public class TerrainManager : MonoBehaviour
             {
                 for (int z = 0; z < SpaceHeight; z++)
                 {
-                    var voxelData = terrain[x + terrainOffsetX, y + terrainOffsetY, z];
+                    var voxelData = _terrain[x + terrainOffsetX, y + terrainOffsetY, z];
 
                     if (voxelData)
                     {
-                        var visibilityData = IsVoxelVisible(terrainOffsetX + x, terrainOffsetY + y, z, terrain);
+                        var visibilityData = IsVoxelVisible(terrainOffsetX + x, terrainOffsetY + y, z, _terrain);
 
                         _voxelBuilder.Position = new Vector3(x, z, y);
                         _voxelBuilder.TopFace = visibilityData.Top;
@@ -88,17 +94,39 @@ public class TerrainManager : MonoBehaviour
         mesh.triangles = triangles.ToArray();
         mesh.uv = uv.ToArray();
         mesh.RecalculateNormals();
+
+        var meshCollider = chunk.GetComponent<MeshCollider>();
+        meshCollider.sharedMesh = mesh;
     }
 
     private VoxelVisibilityData IsVoxelVisible(int x, int y, int z, bool[,,] terrain)
     {
         return new VoxelVisibilityData
         {
-            Top   = !terrain[x, y, z + 1],
+            Top   =                                     !terrain[x, y, z + 1],
             Front = y == (int)TotalVoxelsCount.y - 1 || !terrain[x, y + 1, z],
-            Back  = y == 0                       || !terrain[x, y - 1, z],
+            Back  = y == 0                           || !terrain[x, y - 1, z],
             Right = x == (int)TotalVoxelsCount.x - 1 || !terrain[x + 1, y, z],
-            Left  = x == 0                       || !terrain[x - 1, y, z]
+            Left  = x == 0                           || !terrain[x - 1, y, z]
         };
+    }
+
+    private void HandleMouseClick()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            var dir = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            RaycastHit hit;
+            if (Physics.Raycast(dir, out hit))
+            {
+                var hitPoint = hit.point;
+                if (hitPoint.y % 1 == 0) hitPoint -= new Vector3(0, 0.5f, 0);
+                if (hitPoint.x % 1 == 0 && hitPoint.x < Camera.main.transform.position.x) hitPoint -= new Vector3(0.5f, 0, 0);
+
+                _terrain[(int)hitPoint.x, (int)hitPoint.z, (int)hitPoint.y] = false;
+                RegenerateTerrain();
+            }
+        }
     }
 }
