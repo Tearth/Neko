@@ -4,10 +4,11 @@ using UnityEngine;
 public class TerrainManager : MonoBehaviour
 {
     public int ChunkSize;
-    public int ChunksXCount;
-    public int ChunksYCount;
-    public float NoiseScale;
-    public int MaxHeight;
+    public Vector2 ChunksCount;
+    public int SpaceHeight;
+    public int BaseTerrainHeight;
+    public int MaxTerrainHeight;
+    public float PerlinNoiseScale;
     public GameObject Chunk;
 
     private TerrainGenerator _terrainGenerator;
@@ -21,19 +22,19 @@ public class TerrainManager : MonoBehaviour
 
     private void Start()
     {
-        var totalVoxelsWidth = ChunksXCount * ChunkSize;
-        var totalVoxelsHeight = ChunksYCount * ChunkSize;
+        var totalVoxelsLength = (int)(ChunksCount.x * ChunkSize);
+        var totalVoxelsWidth = (int)(ChunksCount.y * ChunkSize);
 
-        var terrain = _terrainGenerator.Generate(totalVoxelsWidth, totalVoxelsHeight, NoiseScale, MaxHeight);
+        var terrain = _terrainGenerator.Generate(totalVoxelsLength, totalVoxelsWidth, SpaceHeight, BaseTerrainHeight, MaxTerrainHeight, PerlinNoiseScale);
 
         foreach (Transform child in gameObject.transform)
         {
             Destroy(child.gameObject);
         }
 
-        for (var x = 0; x < ChunksXCount; x++)
+        for (var x = 0; x < ChunksCount.x; x++)
         {
-            for (var y = 0; y < ChunksYCount; y++)
+            for (var y = 0; y < ChunksCount.y; y++)
             {
                 BuildChunk(x, y, terrain);
             }
@@ -45,7 +46,7 @@ public class TerrainManager : MonoBehaviour
 
     }
 
-    private void BuildChunk(int chunkX, int chunkY, int[,] terrain)
+    private void BuildChunk(int chunkX, int chunkY, bool[,,] terrain)
     {
         var vertices = new List<Vector3>();
         var triangles = new List<int>();
@@ -58,14 +59,22 @@ public class TerrainManager : MonoBehaviour
         {
             for (int y = 0; y < ChunkSize; y++)
             {
-                _voxelBuilder.Position = new Vector3(x, terrain[x + terrainOffsetX, y + terrainOffsetY], y);
-                _voxelBuilder.TopFace = true;
-                _voxelBuilder.FrontFace = true;
-                _voxelBuilder.BackFace = true;
-                _voxelBuilder.RightFace = true;
-                _voxelBuilder.LeftFace = true;
-                _voxelBuilder.TextureType = TextureType.Dirt;
-                _voxelBuilder.GenerateAndAddToLists(vertices, triangles, uv);
+                for (int z = 0; z < SpaceHeight; z++)
+                {
+                    var voxelData = terrain[x + terrainOffsetX, y + terrainOffsetY, z];
+
+                    if (voxelData)
+                    {
+                        _voxelBuilder.Position = new Vector3(x, z, y);
+                        _voxelBuilder.TopFace = true;
+                        _voxelBuilder.FrontFace = true;
+                        _voxelBuilder.BackFace = true;
+                        _voxelBuilder.RightFace = true;
+                        _voxelBuilder.LeftFace = true;
+                        _voxelBuilder.TextureType = TextureType.Dirt;
+                        _voxelBuilder.GenerateAndAddToLists(vertices, triangles, uv);
+                    }
+                }
             }
         }
 
