@@ -10,10 +10,12 @@ public class TerrainManager : MonoBehaviour
     public GameObject VoxelPrefab;
 
     private TerrainGenerator _terrainGenerator;
+    private VoxelBuilder _voxelBuilder;
 
     public TerrainManager()
     {
         _terrainGenerator = new TerrainGenerator();
+        _voxelBuilder = new VoxelBuilder();
     }
 
     private void Start()
@@ -27,27 +29,20 @@ public class TerrainManager : MonoBehaviour
 
         var vertices = new List<Vector3>();
         var triangles = new List<int>();
-        var squareCount = 0;
 
-        for (var x = 0; x < TerrainWidth; x++)
-        {
-            for (var y = 0; y < TerrainHeight; y++)
-            {
-                vertices.Add(new Vector3(x, terrain[x, y], y));
-                vertices.Add(new Vector3(x + 1, terrain[x, y], y));
-                vertices.Add(new Vector3(x + 1, terrain[x, y], y - 1));
-                vertices.Add(new Vector3(x, terrain[x, y], y - 1));
-
-                triangles.Add(squareCount * 4);
-                triangles.Add(squareCount * 4 + 1);
-                triangles.Add(squareCount * 4 + 3);
-                triangles.Add(squareCount * 4 + 1);
-                triangles.Add(squareCount * 4 + 2);
-                triangles.Add(squareCount * 4 + 3);
-
-                squareCount++;
-            }
-        }
+        //for (var x = 0; x < TerrainWidth; x++)
+        //{
+        //    for (var y = 0; y < TerrainHeight; y++)
+        //    {
+                _voxelBuilder.Position = new Vector3(0, 0, 0);
+                _voxelBuilder.TopFace = true;
+        _voxelBuilder.FrontFace = true;
+        _voxelBuilder.BackFace = true;
+        _voxelBuilder.RightFace = true;
+        _voxelBuilder.LeftFace = true;
+        _voxelBuilder.GenerateAndAddToLists(vertices, triangles, null);
+        //    }
+        //}
 
         var mesh = GetComponent<MeshFilter>().mesh;
         mesh.vertices = vertices.ToArray();
