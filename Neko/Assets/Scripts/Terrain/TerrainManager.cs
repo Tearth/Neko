@@ -10,6 +10,7 @@ public class TerrainManager : MonoBehaviour
     public int MaxTerrainHeight;
     public float PerlinNoiseScale;
     public GameObject Chunk;
+    public GameObject Voxel;
 
     private bool[,,] _terrain;
 
@@ -124,9 +125,33 @@ public class TerrainManager : MonoBehaviour
                 if (hitPoint.y % 1 == 0) hitPoint -= new Vector3(0, 0.5f, 0);
                 if (hitPoint.x % 1 == 0 && hitPoint.x < Camera.main.transform.position.x) hitPoint -= new Vector3(0.5f, 0, 0);
 
-                _terrain[(int)hitPoint.x, (int)hitPoint.z, (int)hitPoint.y] = false;
+                var fixedVoxelPosition = new Vector3((int)hitPoint.x, (int)hitPoint.y, (int)hitPoint.z);
+
+                for (int x = -2; x <= 2; x++)
+                {
+                    for (int y = -2; y <= 2; y++)
+                    {
+                        for (int z = -2; z <= 2; z++)
+                        {
+                            var voxelToCheck = new Vector3(x, y, z) + fixedVoxelPosition;
+                            var q = Vector3.Distance(voxelToCheck, fixedVoxelPosition);
+                            if (Vector3.Distance(voxelToCheck, fixedVoxelPosition) <= 2 && _terrain[(int)voxelToCheck.x, (int)voxelToCheck.z, (int)voxelToCheck.y])
+                            {
+                                Explosion(hit.point, voxelToCheck, 1);
+                            }
+                        }
+                    }
+                }
                 RegenerateTerrain();
             }
         }
+    }
+
+    private void Explosion(Vector3 hitPoint, Vector3 voxelPosition, int range)
+    {
+        _terrain[(int)voxelPosition.x, (int)voxelPosition.z, (int)voxelPosition.y] = false;
+
+        //var voxelAfterExplosion = Instantiate(Voxel, voxelPosition, Quaternion.identity);
+        //voxelAfterExplosion.transform.GetChild(0).GetComponent<Rigidbody>().AddExplosionForce(500, hitPoint, 20, 20);
     }
 }
