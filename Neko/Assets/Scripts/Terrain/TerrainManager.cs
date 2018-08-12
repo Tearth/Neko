@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class TerrainManager : MonoBehaviour
+public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
 {
     public int ChunkSize;
     public Vector2 ChunksCount;
