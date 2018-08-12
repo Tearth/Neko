@@ -67,7 +67,8 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
         {
             for (var y = 0; y < ChunksCount.y; y++)
             {
-                if (_chunks[x, y].Update())
+                var neighbourChunks = GetNeighbourChunks(new Vector2Int(x, y));
+                if (_chunks[x, y].UpdateMesh(neighbourChunks))
                 {
                     updatedChunks++;
                 }
@@ -92,11 +93,34 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
                 var chunk = Instantiate(Chunk, new Vector3(x * ChunkSize, 0, y * ChunkSize), Quaternion.identity, gameObject.transform);
 
                 var chunkScript = chunk.GetComponent<ChunkData>();
-                chunkScript.Generate(new Vector2Int(x, y), SpaceHeight, BaseTerrainHeight, MaxTerrainHeight, ChunkSize, PerlinNoiseScale);
+                chunkScript.GenerateTerrainData(new Vector2Int(x, y), SpaceHeight, BaseTerrainHeight, MaxTerrainHeight, ChunkSize, PerlinNoiseScale);
 
                 _chunks[x, y] = chunkScript;
             }
         }
+
+        for (var x = 0; x < ChunksCount.x; x++)
+        {
+            for (var y = 0; y < ChunksCount.y; y++)
+            {
+                var neighbourChunks = GetNeighbourChunks(new Vector2Int(x, y));
+                _chunks[x, y].UpdateMesh(neighbourChunks);
+            }
+        }
+    }
+
+    private ChunkData[] GetNeighbourChunks(Vector2Int chunkCoords)
+    {
+        var x = chunkCoords.x;
+        var y = chunkCoords.y;
+
+        return new[]
+        {
+            x > 0 ?                 _chunks[x - 1, y] : null,
+            x < ChunksCount.x - 1 ? _chunks[x + 1, y] : null,
+            y > 0 ?                 _chunks[x, y - 1] : null,
+            y < ChunksCount.y - 1 ? _chunks[x, y + 1] : null
+        };
     }
 
     private Vector3Int NormalizePosition(Vector3Int position)

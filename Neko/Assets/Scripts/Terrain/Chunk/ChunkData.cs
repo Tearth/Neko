@@ -22,7 +22,7 @@ public class ChunkData : MonoBehaviour
         _terrainGenerator = new TerrainGenerator();
     }
 
-    public void Generate(Vector2Int position, int height, int baseHeight, int maxHeight, int size, float noiseScale)
+    public void GenerateTerrainData(Vector2Int position, int height, int baseHeight, int maxHeight, int size, float noiseScale)
     {
         _position = position;
         _height = height;
@@ -32,14 +32,14 @@ public class ChunkData : MonoBehaviour
         _noiseScale = noiseScale;
 
         _voxels = _terrainGenerator.Generate(_position, _height, _size, _baseHeight, _maxHeight, _noiseScale);
-        UpdateMesh();
+        _modified = true;
     }
 
-    public bool Update()
+    public bool UpdateMesh(ChunkData[] neighbourChunks)
     {
         if (_modified)
         {
-            UpdateMesh();
+            UpdateMeshData(neighbourChunks);
             _modified = false;
 
             return true;
@@ -66,7 +66,7 @@ public class ChunkData : MonoBehaviour
         return false;
     }
 
-    private void UpdateMesh()
+    private void UpdateMeshData(ChunkData[] neighbourChunks)
     {
         var vertices = new List<Vector3>();
         var triangles = new List<int>();
@@ -83,6 +83,26 @@ public class ChunkData : MonoBehaviour
                     if (voxelData != null)
                     {
                         voxelData.Visibility = GetVisibilityData(x, y, z);
+
+                        if (x == 0 && neighbourChunks[0] != null)
+                        {
+                            voxelData.Visibility.Left = neighbourChunks[0]._voxels[_size - 1, y, z] == null;
+                        }
+
+                        if (x == _size - 1 && neighbourChunks[1] != null)
+                        {
+                            voxelData.Visibility.Right = neighbourChunks[1]._voxels[0, y, z] == null;
+                        }
+
+                        if (y == 0 && neighbourChunks[2] != null)
+                        {
+                            voxelData.Visibility.Back = neighbourChunks[2]._voxels[x, _size - 1, z] == null;
+                        }
+
+                        if (y == _size - 1 && neighbourChunks[3] != null)
+                        {
+                            voxelData.Visibility.Front = neighbourChunks[3]._voxels[x, 0, z] == null;
+                        }
 
                         _voxelBuilder.Position = new Vector3(x, z, y);
                         _voxelBuilder.TopFace = voxelData.Visibility.Top;
