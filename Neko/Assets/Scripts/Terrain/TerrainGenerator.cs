@@ -1,21 +1,27 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class TerrainGenerator
 {
-    public VoxelData[,,] Generate(int length, int width, int height, int baseHeight, int maxHeight, float noiseScale)
+    public VoxelData[,,] Generate(int xPos, int yPos, int height, int size, int baseHeight, int maxHeight, float noiseScale)
     {
-        var heightMap = new VoxelData[length, width, height];
+        var heightMap = new VoxelData[size, size, height];
 
-        for (var x = 0; x < length; x++)
+        var perlinXPos = xPos * noiseScale;
+        var perlinYPos = yPos * noiseScale;
+        var step = 1f * noiseScale / size;
+
+        for (var x = 0; x < size; x++)
         {
-            for (var y = 0; y < width; y++)
+            for (var y = 0; y < size; y++)
             {
-                var perlinX = x * noiseScale / length;
-                var perlinY = y * noiseScale / width;
-                var topVoxelHeight = (int)(Mathf.PerlinNoise(perlinX, perlinY) * maxHeight);
+                var perlinX = perlinXPos + x * step;
+                var perlinY = perlinYPos + y * step;
+                var topVoxelHeight = (int)(Mathf.Clamp(Mathf.PerlinNoise(perlinX, perlinY), 0, 1) * maxHeight);
 
                 var topVoxelData = new VoxelData();
                 topVoxelData.Type = VoxelType.Dirt;
+
                 heightMap[x, y, topVoxelHeight] = topVoxelData;
 
                 for (var z = 0; z < topVoxelHeight; z++)
