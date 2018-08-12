@@ -9,7 +9,7 @@ public class VoxelBuilder
     public bool BackFace { get; set; }
     public bool RightFace { get; set; }
     public bool LeftFace { get; set; }
-    public TextureType TextureType { get; set; }
+    public VoxelType TextureType { get; set; }
 
     private const int MaxTextureTypesCount = 2;
     private const float UvHeightPerType = 1f / MaxTextureTypesCount;

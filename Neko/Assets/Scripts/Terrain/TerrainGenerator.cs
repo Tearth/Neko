@@ -2,9 +2,9 @@
 
 public class TerrainGenerator
 {
-    public bool[,,] Generate(int length, int width, int height, int baseHeight, int maxHeight, float noiseScale)
+    public VoxelData[,,] Generate(int length, int width, int height, int baseHeight, int maxHeight, float noiseScale)
     {
-        var heightMap = new bool[length, width, height];
+        var heightMap = new VoxelData[length, width, height];
 
         for (var x = 0; x < length; x++)
         {
@@ -14,9 +14,16 @@ public class TerrainGenerator
                 var perlinY = y * noiseScale / width;
                 var topVoxelHeight = (int)(Mathf.PerlinNoise(perlinX, perlinY) * maxHeight);
 
-                for (var z = 0; z <= topVoxelHeight; z++)
+                var topVoxelData = new VoxelData();
+                topVoxelData.Type = VoxelType.Dirt;
+                heightMap[x, y, topVoxelHeight] = topVoxelData;
+
+                for (var z = 0; z < topVoxelHeight; z++)
                 {
-                    heightMap[x, y, z] = true;
+                    var voxelData = new VoxelData();
+                    voxelData.Type = VoxelType.Stone;
+
+                    heightMap[x, y, z] = voxelData;
                 }
             }
         }
