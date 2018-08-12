@@ -125,6 +125,6 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
 
     private Vector3Int NormalizePosition(Vector3Int position)
     {
-        return new Vector3Int(position.x % ChunkSize, position.y % ChunkSize, position.z % ChunkSize);
+        return new Vector3Int(position.x % ChunkSize, position.y % ChunkSize, position.z);
     }
 }
