@@ -17,11 +17,46 @@ public class ChunkData : MonoBehaviour
 
     public void Generate(int xPos, int yPos, int height, int baseHeight, int maxHeight, int size, float noiseScale)
     {
+        _voxels = _terrainGenerator.Generate(xPos, yPos, height, size, baseHeight, maxHeight, noiseScale);
+        UpdateMesh(height, size);
+    }
+
+    public bool Update(int height, int size)
+    {
+        if (_modified)
+        {
+            UpdateMesh(height, size);
+            _modified = false;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public VoxelData GetVoxel(Vector3Int coordinates)
+    {
+        return _voxels[coordinates.x, coordinates.y, coordinates.z];
+    }
+
+    public bool RemoveVoxel(Vector3Int coordinates)
+    {
+        if (_voxels[coordinates.x, coordinates.y, coordinates.z] != null)
+        {
+            _voxels[coordinates.x, coordinates.y, coordinates.z] = null;
+            _modified = true;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private void UpdateMesh(int height, int size)
+    {
         var vertices = new List<Vector3>();
         var triangles = new List<int>();
         var uv = new List<Vector2>();
-
-        _voxels = _terrainGenerator.Generate(xPos, yPos, height, size, baseHeight, maxHeight, noiseScale);
 
         for (var x = 0; x < size; x++)
         {
@@ -52,6 +87,7 @@ public class ChunkData : MonoBehaviour
         var meshFilter = GetComponent<MeshFilter>();
         var meshCollider = GetComponent<MeshCollider>();
 
+        meshFilter.mesh.Clear();
         meshFilter.mesh.vertices = vertices.ToArray();
         meshFilter.mesh.triangles = triangles.ToArray();
         meshFilter.mesh.uv = uv.ToArray();
@@ -64,11 +100,11 @@ public class ChunkData : MonoBehaviour
     {
         return new VoxelVisibilityData
         {
-            Top   =                       _voxels[x, y, z + 1] == null,
-            Front = y == (int)size - 1 || _voxels[x, y + 1, z] == null,
-            Back  = y == 0             || _voxels[x, y - 1, z] == null,
-            Right = x == (int)size - 1 || _voxels[x + 1, y, z] == null,
-            Left  = x == 0             || _voxels[x - 1, y, z] == null
+            Top   =                  _voxels[x, y, z + 1] == null,
+            Front = y == size - 1 || _voxels[x, y + 1, z] == null,
+            Back  = y == 0        || _voxels[x, y - 1, z] == null,
+            Right = x == size - 1 || _voxels[x + 1, y, z] == null,
+            Left  = x == 0        || _voxels[x - 1, y, z] == null
         };
     }
 }

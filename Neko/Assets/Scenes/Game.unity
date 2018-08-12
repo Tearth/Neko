@@ -153,12 +153,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2df48e22ec449854e82aa826b4161bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ChunkSize: 16
-  ChunksCount: {x: 1, y: 1}
+  ChunkSize: 32
+  ChunksCount: {x: 2, y: 2}
   SpaceHeight: 30
   BaseTerrainHeight: 2
   MaxTerrainHeight: 25
-  PerlinNoiseScale: 1
+  PerlinNoiseScale: 0.15
   Chunk: {fileID: 1274874719352104, guid: 1e5108a9373b4fe4aaf73ed512926528, type: 2}
   Voxel: {fileID: 1457988131484296, guid: ee5ec7e66dd98bb4d892fed130baebfb, type: 2}
 --- !u!1 &559858981

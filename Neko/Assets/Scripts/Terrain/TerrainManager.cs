@@ -14,21 +14,70 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
 
     private ChunkData[,] _chunks;
 
-    public TerrainManager()
-    {
-    }
-
     private void Start()
     {
-        RegenerateTerrain();
+        CreateChunks();
     }
 
     private void Update()
     {
-        HandleMouseClick();
+
     }
 
-    private void RegenerateTerrain()
+    public Vector3Int GetVoxelCoordinatesByHitPoint(Vector3 hitPoint)
+    {
+        if (hitPoint.y % 1 == 0)
+        {
+            hitPoint -= new Vector3(0, 0.5f, 0);
+        }
+
+        if (hitPoint.x % 1 == 0 && hitPoint.x < Camera.main.transform.position.x)
+        {
+            hitPoint -= new Vector3(0.5f, 0, 0);
+        }
+
+        return new Vector3Int((int)hitPoint.x, (int)hitPoint.z, (int)hitPoint.y);
+    }
+
+    public ChunkData GetChunkByVoxelCoordinates(Vector3Int voxelCoordinates)
+    {
+        var chunkX = voxelCoordinates.x / ChunkSize;
+        var chunkY = voxelCoordinates.y / ChunkSize;
+
+        if (chunkX >= 0 && chunkX < ChunksCount.x && chunkY >= 0 && chunkY < ChunksCount.y)
+        {
+            return _chunks[chunkX, chunkY];
+        }
+
+        return null;
+    }
+
+    public bool RemoveVoxel(Vector3Int position)
+    {
+        var chunk = GetChunkByVoxelCoordinates(position);
+        var normalizedPosition = NormalizePosition(position);
+
+        return chunk.RemoveVoxel(normalizedPosition);
+    }
+
+    public int UpdateChunks()
+    {
+        var updatedChunks = 0;
+        for (var x = 0; x < ChunksCount.x; x++)
+        {
+            for (var y = 0; y < ChunksCount.y; y++)
+            {
+                if (_chunks[x, y].Update(SpaceHeight, ChunkSize))
+                {
+                    updatedChunks++;
+                }
+            }
+        }
+
+        return updatedChunks;
+    }
+
+    private void CreateChunks()
     {
         foreach (Transform child in gameObject.transform)
         {
@@ -50,46 +99,8 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
         }
     }
 
-    private void HandleMouseClick()
+    private Vector3Int NormalizePosition(Vector3Int position)
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            var dir = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            RaycastHit hit;
-            if (Physics.Raycast(dir, out hit))
-            {
-                var hitPoint = hit.point;
-                if (hitPoint.y % 1 == 0) hitPoint -= new Vector3(0, 0.5f, 0);
-                if (hitPoint.x % 1 == 0 && hitPoint.x < Camera.main.transform.position.x) hitPoint -= new Vector3(0.5f, 0, 0);
-
-                var fixedVoxelPosition = new Vector3((int)hitPoint.x, (int)hitPoint.y, (int)hitPoint.z);
-
-                for (int x = -2; x <= 2; x++)
-                {
-                    for (int y = -2; y <= 2; y++)
-                    {
-                        for (int z = -2; z <= 2; z++)
-                        {
-                            var voxelToCheck = new Vector3(x, y, z) + fixedVoxelPosition;
-                            var q = Vector3.Distance(voxelToCheck, fixedVoxelPosition);
-                            //if (Vector3.Distance(voxelToCheck, fixedVoxelPosition) <= 2 && _voxels[(int)voxelToCheck.x, (int)voxelToCheck.z, (int)voxelToCheck.y] != null)
-                            {
-                                Explosion(hit.point, voxelToCheck, 1);
-                            }
-                        }
-                    }
-                }
-                RegenerateTerrain();
-            }
-        }
-    }
-
-    private void Explosion(Vector3 hitPoint, Vector3 voxelPosition, int range)
-    {
-        //_voxels[(int)voxelPosition.x, (int)voxelPosition.z, (int)voxelPosition.y] = null;
-
-        //var voxelAfterExplosion = Instantiate(Voxel, voxelPosition, Quaternion.identity);
-        //voxelAfterExplosion.transform.GetChild(0).GetComponent<Rigidbody>().AddExplosionForce(500, hitPoint, 20, 20);
+        return new Vector3Int(position.x % ChunkSize, position.y % ChunkSize, position.z % ChunkSize);
     }
 }
