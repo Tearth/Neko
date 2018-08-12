@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class TerrainGenerator
 {
-    public VoxelData[,,] Generate(int xPos, int yPos, int height, int size, int baseHeight, int maxHeight, float noiseScale)
+    public VoxelData[,,] Generate(Vector2Int position, int height, int size, int baseHeight, int maxHeight, float noiseScale)
     {
         var heightMap = new VoxelData[size, size, height];
 
-        var perlinXPos = xPos * noiseScale;
-        var perlinYPos = yPos * noiseScale;
+        var perlinXPos = position.x * noiseScale;
+        var perlinYPos = position.y * noiseScale;
         var step = 1f * noiseScale / size;
 
         for (var x = 0; x < size; x++)

@@ -67,7 +67,7 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
         {
             for (var y = 0; y < ChunksCount.y; y++)
             {
-                if (_chunks[x, y].Update(SpaceHeight, ChunkSize))
+                if (_chunks[x, y].Update())
                 {
                     updatedChunks++;
                 }
@@ -92,7 +92,7 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
                 var chunk = Instantiate(Chunk, new Vector3(x * ChunkSize, 0, y * ChunkSize), Quaternion.identity, gameObject.transform);
 
                 var chunkScript = chunk.GetComponent<ChunkData>();
-                chunkScript.Generate(x, y, SpaceHeight, BaseTerrainHeight, MaxTerrainHeight, ChunkSize, PerlinNoiseScale);
+                chunkScript.Generate(new Vector2Int(x, y), SpaceHeight, BaseTerrainHeight, MaxTerrainHeight, ChunkSize, PerlinNoiseScale);
 
                 _chunks[x, y] = chunkScript;
             }
