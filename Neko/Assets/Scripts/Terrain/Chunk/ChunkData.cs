@@ -106,6 +106,7 @@ public class ChunkData : MonoBehaviour
 
                         _voxelBuilder.Position = new Vector3(x, z, y);
                         _voxelBuilder.TopFace = voxelData.Visibility.Top;
+                        _voxelBuilder.BottomFace = voxelData.Visibility.Bottom;
                         _voxelBuilder.FrontFace = voxelData.Visibility.Front;
                         _voxelBuilder.BackFace = voxelData.Visibility.Back;
                         _voxelBuilder.RightFace = voxelData.Visibility.Right;
@@ -134,11 +135,14 @@ public class ChunkData : MonoBehaviour
     {
         return new VoxelVisibilityData
         {
-            Top   =                  _voxels[x, y, z + 1] == null,
-            Front = y < _size - 1 && _voxels[x, y + 1, z] == null,
-            Back  = y > 0         && _voxels[x, y - 1, z] == null,
-            Right = x < _size - 1 && _voxels[x + 1, y, z] == null,
-            Left  = x > 0         && _voxels[x - 1, y, z] == null
+            Top    = z < _height - 1 && _voxels[x, y, z + 1] == null,
+            Bottom = z > 0           && _voxels[x, y, z - 1] == null,
+
+            Front  = y < _size - 1   && _voxels[x, y + 1, z] == null,
+            Back   = y > 0           && _voxels[x, y - 1, z] == null,
+
+            Right  = x < _size - 1   && _voxels[x + 1, y, z] == null,
+            Left   = x > 0           && _voxels[x - 1, y, z] == null
         };
     }
 }

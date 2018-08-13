@@ -153,12 +153,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2df48e22ec449854e82aa826b4161bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ChunkSize: 32
-  ChunksCount: {x: 2, y: 2}
-  SpaceHeight: 30
+  ChunkSize: 16
+  ChunksCount: {x: 8, y: 8}
+  SpaceHeight: 20
   BaseTerrainHeight: 2
-  MaxTerrainHeight: 25
-  PerlinNoiseScale: 0.15
+  MaxTerrainHeight: 20
+  PerlinNoiseScale: 0.25
   Chunk: {fileID: 1274874719352104, guid: 1e5108a9373b4fe4aaf73ed512926528, type: 2}
   Voxel: {fileID: 1457988131484296, guid: ee5ec7e66dd98bb4d892fed130baebfb, type: 2}
 --- !u!1 &559858981
@@ -186,7 +186,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 559858981}
   m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: 70, y: 27.5, z: 25.5}
+  m_LocalPosition: {x: 63.3, y: 67, z: -23.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1189297483}
@@ -262,6 +262,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1189297483}
+  - component: {fileID: 1189297484}
   m_Layer: 0
   m_Name: Root
   m_TagString: Untagged
@@ -284,3 +285,14 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1189297484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1189297482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dc6a6c546b2bb341b523d981ee51985, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
