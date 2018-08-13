@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class WaterManager : MonoBehaviourSingleton<WaterManager>
+public class WaterEntity : MonoBehaviour
 {
     public float WaterLevel;
 

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ChunkData : MonoBehaviour
+public class ChunkEntity : MonoBehaviour
 {
     private VoxelBuilder _voxelBuilder;
     private TerrainGenerator _terrainGenerator;
 
-    private VoxelData[,,] _voxels;
+    private VoxelEntity[,,] _voxels;
     private bool _modified;
 
     private Vector2Int _position;
@@ -17,7 +17,7 @@ public class ChunkData : MonoBehaviour
     private int _size;
     private float _noiseScale;
 
-    public ChunkData()
+    public ChunkEntity()
     {
         _voxelBuilder = new VoxelBuilder();
         _terrainGenerator = new TerrainGenerator();
@@ -37,7 +37,7 @@ public class ChunkData : MonoBehaviour
         _modified = true;
     }
 
-    public bool UpdateMesh(ChunkData[] neighbourChunks)
+    public bool UpdateMesh(ChunkEntity[] neighbourChunks)
     {
         if (_modified)
         {
@@ -50,7 +50,7 @@ public class ChunkData : MonoBehaviour
         return false;
     }
 
-    public VoxelData GetVoxel(Vector3Int coordinates)
+    public VoxelEntity GetVoxel(Vector3Int coordinates)
     {
         return _voxels[coordinates.x, coordinates.y, coordinates.z];
     }
@@ -68,7 +68,7 @@ public class ChunkData : MonoBehaviour
         return false;
     }
 
-    private void UpdateMeshData(ChunkData[] neighbourChunks)
+    private void UpdateMeshData(ChunkEntity[] neighbourChunks)
     {
         var vertices = new List<Vector3>();
         var triangles = new List<int>();

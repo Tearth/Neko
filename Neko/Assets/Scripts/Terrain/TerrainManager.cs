@@ -12,7 +12,7 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
     public GameObject Chunk;
     public GameObject Voxel;
 
-    private ChunkData[,] _chunks;
+    private ChunkEntity[,] _chunks;
 
     private void Start()
     {
@@ -39,7 +39,7 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
         return new Vector3Int((int)hitPoint.x, (int)hitPoint.z, (int)hitPoint.y);
     }
 
-    public ChunkData GetChunkByVoxelCoordinates(Vector3Int voxelCoordinates)
+    public ChunkEntity GetChunkByVoxelCoordinates(Vector3Int voxelCoordinates)
     {
         var chunkX = voxelCoordinates.x / ChunkSize;
         var chunkY = voxelCoordinates.y / ChunkSize;
@@ -85,14 +85,14 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
             Destroy(child.gameObject);
         }
 
-        _chunks = new ChunkData[ChunksCount.x, ChunksCount.y];
+        _chunks = new ChunkEntity[ChunksCount.x, ChunksCount.y];
         for (var x = 0; x < ChunksCount.x; x++)
         {
             for (var y = 0; y < ChunksCount.y; y++)
             {
                 var chunk = Instantiate(Chunk, new Vector3(x * ChunkSize, 0, y * ChunkSize), Quaternion.identity, gameObject.transform);
 
-                var chunkScript = chunk.GetComponent<ChunkData>();
+                var chunkScript = chunk.GetComponent<ChunkEntity>();
                 chunkScript.GenerateTerrainData(new Vector2Int(x, y), ChunksCount, SpaceHeight, BaseTerrainHeight, MaxTerrainHeight, ChunkSize, PerlinNoiseScale);
 
                 _chunks[x, y] = chunkScript;
@@ -109,7 +109,7 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
         }
     }
 
-    private ChunkData[] GetNeighbourChunks(Vector2Int chunkCoords)
+    private ChunkEntity[] GetNeighbourChunks(Vector2Int chunkCoords)
     {
         var x = chunkCoords.x;
         var y = chunkCoords.y;

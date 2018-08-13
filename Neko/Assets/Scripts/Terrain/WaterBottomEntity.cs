@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class WaterBottom : MonoBehaviour
+public class WaterBottomEntity : MonoBehaviour
 {
     public float WaterBottomLevel;
 
