@@ -156,7 +156,7 @@ MonoBehaviour:
   ChunkSize: 16
   ChunksCount: {x: 8, y: 8}
   SpaceHeight: 20
-  BaseTerrainHeight: 2
+  BaseTerrainHeight: 0
   MaxTerrainHeight: 20
   PerlinNoiseScale: 0.25
   Chunk: {fileID: 1274874719352104, guid: 1e5108a9373b4fe4aaf73ed512926528, type: 2}

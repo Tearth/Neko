@@ -93,7 +93,7 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
                 var chunk = Instantiate(Chunk, new Vector3(x * ChunkSize, 0, y * ChunkSize), Quaternion.identity, gameObject.transform);
 
                 var chunkScript = chunk.GetComponent<ChunkData>();
-                chunkScript.GenerateTerrainData(new Vector2Int(x, y), SpaceHeight, BaseTerrainHeight, MaxTerrainHeight, ChunkSize, PerlinNoiseScale);
+                chunkScript.GenerateTerrainData(new Vector2Int(x, y), ChunksCount, SpaceHeight, BaseTerrainHeight, MaxTerrainHeight, ChunkSize, PerlinNoiseScale);
 
                 _chunks[x, y] = chunkScript;
             }

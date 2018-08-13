@@ -10,6 +10,7 @@ public class ChunkData : MonoBehaviour
     private bool _modified;
 
     private Vector2Int _position;
+    private Vector2Int _chunksCount;
     private int _height;
     private int _baseHeight;
     private int _maxHeight;
@@ -22,16 +23,17 @@ public class ChunkData : MonoBehaviour
         _terrainGenerator = new TerrainGenerator();
     }
 
-    public void GenerateTerrainData(Vector2Int position, int height, int baseHeight, int maxHeight, int size, float noiseScale)
+    public void GenerateTerrainData(Vector2Int position, Vector2Int chunksCount, int height, int baseHeight, int maxHeight, int size, float noiseScale)
     {
         _position = position;
+        _chunksCount = chunksCount;
         _height = height;
         _baseHeight = baseHeight;
         _maxHeight = maxHeight;
         _size = size;
         _noiseScale = noiseScale;
 
-        _voxels = _terrainGenerator.Generate(_position, _height, _size, _baseHeight, _maxHeight, _noiseScale);
+        _voxels = _terrainGenerator.Generate(_position, _chunksCount, _height, _size, _baseHeight, _maxHeight, _noiseScale);
         _modified = true;
     }
 
@@ -135,14 +137,14 @@ public class ChunkData : MonoBehaviour
     {
         return new VoxelVisibilityData
         {
-            Top    = z < _height - 1 && _voxels[x, y, z + 1] == null,
-            Bottom = z > 0           && _voxels[x, y, z - 1] == null,
+            Top    = z == _height - 1 || _voxels[x, y, z + 1] == null,
+            Bottom = z > 0            && _voxels[x, y, z - 1] == null,
 
-            Front  = y < _size - 1   && _voxels[x, y + 1, z] == null,
-            Back   = y > 0           && _voxels[x, y - 1, z] == null,
+            Front  = y < _size - 1    && _voxels[x, y + 1, z] == null,
+            Back   = y > 0            && _voxels[x, y - 1, z] == null,
 
-            Right  = x < _size - 1   && _voxels[x + 1, y, z] == null,
-            Left   = x > 0           && _voxels[x - 1, y, z] == null
+            Right  = x < _size - 1    && _voxels[x + 1, y, z] == null,
+            Left   = x > 0            && _voxels[x - 1, y, z] == null
         };
     }
 }
