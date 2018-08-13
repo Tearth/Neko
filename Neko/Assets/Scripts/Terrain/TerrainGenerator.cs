@@ -22,14 +22,14 @@ public class TerrainGenerator
                 var topVoxelHeight = (int)((Mathf.Clamp(Mathf.PerlinNoise(perlinX, perlinY), 0, 1) * maxHeight) * edgeRatio) + baseHeight;
 
                 var topVoxelData = new VoxelData();
-                topVoxelData.Type = VoxelType.Dirt;
+                topVoxelData.Type = topVoxelHeight > 7 ? VoxelType.Dirt : VoxelType.Sand;
 
                 heightMap[x, y, topVoxelHeight] = topVoxelData;
 
                 for (var z = 0; z < topVoxelHeight; z++)
                 {
                     var voxelData = new VoxelData();
-                    voxelData.Type = VoxelType.Stone;
+                    voxelData.Type = VoxelType.Sand;
 
                     heightMap[x, y, z] = voxelData;
                 }

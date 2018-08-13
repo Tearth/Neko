@@ -113,7 +113,7 @@ public class ChunkData : MonoBehaviour
                         _voxelBuilder.BackFace = voxelData.Visibility.Back;
                         _voxelBuilder.RightFace = voxelData.Visibility.Right;
                         _voxelBuilder.LeftFace = voxelData.Visibility.Left;
-                        _voxelBuilder.TextureType = VoxelType.Dirt;
+                        _voxelBuilder.TextureType = voxelData.Type;
 
                         _voxelBuilder.GenerateAndAddToLists(vertices, triangles, uv);
                     }
