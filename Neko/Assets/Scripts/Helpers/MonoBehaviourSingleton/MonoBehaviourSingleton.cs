@@ -10,10 +10,8 @@ public class MonoBehaviourSingleton<T> : MonoBehaviour where T : class
             {
                 return _instance;
             }
-            else
-            {
-                throw new SingletonNotInitializedException();
-            }
+
+            throw new SingletonNotInitializedException();
         }
     }
 

@@ -4,12 +4,7 @@ using UnityEngine;
 public class VoxelBuilder
 {
     public Vector3 Position { get; set; }
-    public bool TopFace { get; set; }
-    public bool BottomFace { get; set; }
-    public bool FrontFace { get; set; }
-    public bool BackFace { get; set; }
-    public bool RightFace { get; set; }
-    public bool LeftFace { get; set; }
+    public VoxelVisibilityData Visibility { get; set; }
     public VoxelType TextureType { get; set; }
 
     private const int MaxTextureTypesCount = 2;
@@ -24,37 +19,37 @@ public class VoxelBuilder
     public void GenerateAndAddToLists(List<Vector3> vertices, List<int> triangles, List<Vector2> uv)
     {
         var squareCount = vertices.Count / 4;
-        if (TopFace)
+        if (Visibility.Top)
         {
             GenerateTopFace(vertices, triangles, uv, squareCount);
             squareCount++;
         }
 
-        if (BottomFace)
+        if (Visibility.Bottom)
         {
             GenerateBottomFace(vertices, triangles, uv, squareCount);
             squareCount++;
         }
 
-        if (FrontFace)
+        if (Visibility.Front)
         {
             GenerateFrontFace(vertices, triangles, uv, squareCount);
             squareCount++;
         }
 
-        if (BackFace)
+        if (Visibility.Back)
         {
             GenerateBackFace(vertices, triangles, uv, squareCount);
             squareCount++;
         }
 
-        if (RightFace)
+        if (Visibility.Right)
         {
             GenerateRightFace(vertices, triangles, uv, squareCount);
             squareCount++;
         }
 
-        if (LeftFace)
+        if (Visibility.Left)
         {
             GenerateLeftFace(vertices, triangles, uv, squareCount);
             squareCount++;
@@ -64,12 +59,7 @@ public class VoxelBuilder
     public void Reset()
     {
         Position = Vector3.zero;
-        TopFace = false;
-        BottomFace = false;
-        FrontFace = false;
-        BackFace = false;
-        RightFace = false;
-        LeftFace = false;
+        Visibility = null;
         TextureType = 0;
     }
 

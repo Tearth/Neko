@@ -10,7 +10,7 @@ public class GameInput : MonoBehaviour
 {
     private TerrainManager _terrainManager;
 
-    private void Start()
+    private void Awake()
     {
         _terrainManager = TerrainManager.Instance;
     }

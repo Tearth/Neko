@@ -11,17 +11,13 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
     public float PerlinNoiseScale;
     public GameObject Chunk;
     public GameObject Voxel;
+    public List<GameObject> Trees;
 
     private ChunkEntity[,] _chunks;
 
     private void Start()
     {
         CreateChunks();
-    }
-
-    private void Update()
-    {
-
     }
 
     public Vector3Int GetVoxelCoordinatesByHitPoint(Vector3 hitPoint)
@@ -93,7 +89,7 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
                 var chunk = Instantiate(Chunk, new Vector3(x * ChunkSize, 0, y * ChunkSize), Quaternion.identity, gameObject.transform);
 
                 var chunkScript = chunk.GetComponent<ChunkEntity>();
-                chunkScript.GenerateTerrainData(new Vector2Int(x, y), ChunksCount, SpaceHeight, BaseTerrainHeight, MaxTerrainHeight, ChunkSize, PerlinNoiseScale);
+                chunkScript.GenerateTerrainData(new Vector2Int(x, y));
 
                 _chunks[x, y] = chunkScript;
             }

@@ -5,35 +5,25 @@ public class ChunkEntity : MonoBehaviour
 {
     private VoxelBuilder _voxelBuilder;
     private TerrainGenerator _terrainGenerator;
+    private TerrainManager _terrainManager;
 
-    private VoxelEntity[,,] _voxels;
+    private VoxelData[,,] _voxels;
     private bool _modified;
 
     private Vector2Int _position;
-    private Vector2Int _chunksCount;
-    private int _height;
-    private int _baseHeight;
-    private int _maxHeight;
-    private int _size;
-    private float _noiseScale;
 
-    public ChunkEntity()
+    public void Awake()
     {
         _voxelBuilder = new VoxelBuilder();
         _terrainGenerator = new TerrainGenerator();
+        _terrainManager = TerrainManager.Instance;
     }
 
-    public void GenerateTerrainData(Vector2Int position, Vector2Int chunksCount, int height, int baseHeight, int maxHeight, int size, float noiseScale)
+    public void GenerateTerrainData(Vector2Int position)
     {
         _position = position;
-        _chunksCount = chunksCount;
-        _height = height;
-        _baseHeight = baseHeight;
-        _maxHeight = maxHeight;
-        _size = size;
-        _noiseScale = noiseScale;
 
-        _voxels = _terrainGenerator.Generate(_position, _chunksCount, _height, _size, _baseHeight, _maxHeight, _noiseScale);
+        _voxels = _terrainGenerator.Generate(_position);
         _modified = true;
     }
 
@@ -50,7 +40,7 @@ public class ChunkEntity : MonoBehaviour
         return false;
     }
 
-    public VoxelEntity GetVoxel(Vector3Int coordinates)
+    public VoxelData GetVoxel(Vector3Int coordinates)
     {
         return _voxels[coordinates.x, coordinates.y, coordinates.z];
     }
@@ -74,11 +64,11 @@ public class ChunkEntity : MonoBehaviour
         var triangles = new List<int>();
         var uv = new List<Vector2>();
 
-        for (var x = 0; x < _size; x++)
+        for (var x = 0; x < _terrainManager.ChunkSize; x++)
         {
-            for (var y = 0; y < _size; y++)
+            for (var y = 0; y < _terrainManager.ChunkSize; y++)
             {
-                for (var z = 0; z < _height; z++)
+                for (var z = 0; z < _terrainManager.SpaceHeight; z++)
                 {
                     var voxelData = _voxels[x, y, z];
 
@@ -88,31 +78,26 @@ public class ChunkEntity : MonoBehaviour
 
                         if (x == 0 && neighbourChunks[0] != null)
                         {
-                            voxelData.Visibility.Left = neighbourChunks[0]._voxels[_size - 1, y, z] == null;
+                            voxelData.Visibility.Left = neighbourChunks[0]._voxels[_terrainManager.ChunkSize - 1, y, z] == null;
                         }
 
-                        if (x == _size - 1 && neighbourChunks[1] != null)
+                        if (x == _terrainManager.ChunkSize - 1 && neighbourChunks[1] != null)
                         {
                             voxelData.Visibility.Right = neighbourChunks[1]._voxels[0, y, z] == null;
                         }
 
                         if (y == 0 && neighbourChunks[2] != null)
                         {
-                            voxelData.Visibility.Back = neighbourChunks[2]._voxels[x, _size - 1, z] == null;
+                            voxelData.Visibility.Back = neighbourChunks[2]._voxels[x, _terrainManager.ChunkSize - 1, z] == null;
                         }
 
-                        if (y == _size - 1 && neighbourChunks[3] != null)
+                        if (y == _terrainManager.ChunkSize - 1 && neighbourChunks[3] != null)
                         {
                             voxelData.Visibility.Front = neighbourChunks[3]._voxels[x, 0, z] == null;
                         }
 
                         _voxelBuilder.Position = new Vector3(x, z, y);
-                        _voxelBuilder.TopFace = voxelData.Visibility.Top;
-                        _voxelBuilder.BottomFace = voxelData.Visibility.Bottom;
-                        _voxelBuilder.FrontFace = voxelData.Visibility.Front;
-                        _voxelBuilder.BackFace = voxelData.Visibility.Back;
-                        _voxelBuilder.RightFace = voxelData.Visibility.Right;
-                        _voxelBuilder.LeftFace = voxelData.Visibility.Left;
+                        _voxelBuilder.Visibility = voxelData.Visibility;
                         _voxelBuilder.TextureType = voxelData.Type;
 
                         _voxelBuilder.GenerateAndAddToLists(vertices, triangles, uv);
@@ -137,14 +122,14 @@ public class ChunkEntity : MonoBehaviour
     {
         return new VoxelVisibilityData
         {
-            Top    = z == _height - 1 || _voxels[x, y, z + 1] == null,
-            Bottom = z > 0            && _voxels[x, y, z - 1] == null,
+            Top    = z == _terrainManager.SpaceHeight - 1 || _voxels[x, y, z + 1] == null,
+            Bottom = z > 0 && _voxels[x, y, z - 1] == null,
 
-            Front  = y < _size - 1    && _voxels[x, y + 1, z] == null,
-            Back   = y > 0            && _voxels[x, y - 1, z] == null,
+            Front  = y < _terrainManager.ChunkSize - 1    && _voxels[x, y + 1, z] == null,
+            Back   = y > 0 && _voxels[x, y - 1, z] == null,
 
-            Right  = x < _size - 1    && _voxels[x + 1, y, z] == null,
-            Left   = x > 0            && _voxels[x - 1, y, z] == null
+            Right  = x < _terrainManager.ChunkSize - 1    && _voxels[x + 1, y, z] == null,
+            Left   = x > 0 && _voxels[x - 1, y, z] == null
         };
     }
 }
