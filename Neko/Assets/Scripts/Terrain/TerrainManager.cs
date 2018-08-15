@@ -9,9 +9,12 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
     public int BaseTerrainHeight;
     public int MaxTerrainHeight;
     public float PerlinNoiseScale;
+    public int TreeCount;
     public GameObject Chunk;
     public GameObject Voxel;
-    public List<GameObject> Trees;
+    public GameObject Tree;
+
+    public Vector2Int TotalVoxelCount => new Vector2Int(ChunkSize * ChunksCount.x, ChunkSize * ChunksCount.y);
 
     private ChunkEntity[,] _chunks;
 
@@ -46,6 +49,12 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
         }
 
         return null;
+    }
+
+    public GetSurfaceHeight(Vector2Int position)
+    {
+        var chunk = GetChunkByVoxelCoordinates(new Vector3Int(position.x, position.y, 0));
+        chunk.GetVoxel()
     }
 
     public bool RemoveVoxel(Vector3Int position)
