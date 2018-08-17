@@ -45,19 +45,6 @@ public class ChunkEntity : MonoBehaviour
         return _voxels[coordinates.x, coordinates.y, coordinates.z];
     }
 
-    public int GetHighestPoint(Vector2Int coordinates)
-    {
-        for (int i = 0; i < _terrainManager.SpaceHeight; i++)
-        {
-            if (GetVoxel(new Vector3Int(coordinates.x, coordinates.y, i)) == null)
-            {
-                return i;
-            }
-        }
-
-        return -1;
-    }
-
     public bool RemoveVoxel(Vector3Int coordinates)
     {
         if (_voxels[coordinates.x, coordinates.y, coordinates.z] != null)
