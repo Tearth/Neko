@@ -64,6 +64,8 @@ public class ChunkEntity : MonoBehaviour
             _voxels[coordinates.x, coordinates.y, coordinates.z] = null;
             Modified = true;
 
+            UpdateNeighbourVoxels(coordinates, true);
+
             if (coordinates.x == 0 || coordinates.x == _size - 1 || coordinates.y == 0 || coordinates.y == _size - 1)
             {
                 UpdateNeighbourChunks(coordinates);
@@ -73,6 +75,39 @@ public class ChunkEntity : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void UpdateNeighbourVoxels(Vector3Int coordinates, bool voxelRemoved)
+    {
+        if (coordinates.x > 0 && _voxels[coordinates.x - 1, coordinates.y, coordinates.z] != null)
+        {
+            _voxels[coordinates.x - 1, coordinates.y, coordinates.z].Visibility.Right = voxelRemoved;
+        }
+
+        if (coordinates.x < _size - 1 && _voxels[coordinates.x + 1, coordinates.y, coordinates.z] != null)
+        {
+            _voxels[coordinates.x + 1, coordinates.y, coordinates.z].Visibility.Left = voxelRemoved;
+        }
+
+        if (coordinates.y > 0 && _voxels[coordinates.x, coordinates.y - 1, coordinates.z] != null)
+        {
+            _voxels[coordinates.x, coordinates.y - 1, coordinates.z].Visibility.Front = voxelRemoved;
+        }
+
+        if (coordinates.y < _size - 1 && _voxels[coordinates.x, coordinates.y + 1, coordinates.z] != null)
+        {
+            _voxels[coordinates.x, coordinates.y + 1, coordinates.z].Visibility.Back = voxelRemoved;
+        }
+
+        if (coordinates.z > 0 && _voxels[coordinates.x, coordinates.y, coordinates.z - 1] != null)
+        {
+            _voxels[coordinates.x, coordinates.y, coordinates.z - 1].Visibility.Top = voxelRemoved;
+        }
+
+        if (coordinates.z < _size - 1 && _voxels[coordinates.x, coordinates.y, coordinates.z + 1] != null)
+        {
+            _voxels[coordinates.x, coordinates.y, coordinates.z + 1].Visibility.Bottom = voxelRemoved;
+        }
     }
 
     private void UpdateNeighbourChunks(Vector3Int coordinates)
@@ -114,7 +149,10 @@ public class ChunkEntity : MonoBehaviour
 
                     if (voxelData != null)
                     {
-                        voxelData.Visibility = GetVisibilityData(x, y, z);
+                        if (voxelData.Visibility == null)
+                        {
+                            voxelData.Visibility = GetVisibilityData(x, y, z);
+                        }
 
                         if (x == 0 && NeighbourChunks[0] != null)
                         {

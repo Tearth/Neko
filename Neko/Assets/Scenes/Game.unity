@@ -159,8 +159,10 @@ MonoBehaviour:
   BaseTerrainHeight: 0
   MaxTerrainHeight: 20
   PerlinNoiseScale: 0.25
-  Chunk: {fileID: 1274874719352104, guid: 1e5108a9373b4fe4aaf73ed512926528, type: 2}
-  Voxel: {fileID: 1457988131484296, guid: ee5ec7e66dd98bb4d892fed130baebfb, type: 2}
+  ChunkPrefab: {fileID: 1274874719352104, guid: 1e5108a9373b4fe4aaf73ed512926528,
+    type: 2}
+  VoxelPrefab: {fileID: 1457988131484296, guid: ee5ec7e66dd98bb4d892fed130baebfb,
+    type: 2}
 --- !u!1 &559858981
 GameObject:
   m_ObjectHideFlags: 0
