@@ -6,14 +6,12 @@ public class MonoBehaviourSingleton<T> : MonoBehaviour where T : class
     {
         get
         {
-            if (_instance != null)
-            {
-                return _instance;
-            }
-            else
+            if (_instance == null)
             {
                 throw new SingletonNotInitializedException();
             }
+
+            return _instance;
         }
     }
 

@@ -16,9 +16,4 @@ public class WaterEntity : MonoBehaviour
         transform.position = new Vector3(terrainWidth / 2, WaterLevel, terrainHeight / 2);
         transform.localScale = new Vector3(terrainWidth, 1, terrainHeight);
     }
-
-    private void Update()
-    {
-
-    }
 }
