@@ -26,14 +26,19 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
 
     public Vector3Int GetVoxelCoordinatesByHitPoint(Vector3 hitPoint)
     {
+        if (hitPoint.x % 1 == 0 && hitPoint.x < Camera.main.transform.position.x)
+        {
+            hitPoint -= new Vector3(0.5f, 0, 0);
+        }
+
         if (hitPoint.y % 1 == 0)
         {
             hitPoint -= new Vector3(0, 0.5f, 0);
         }
 
-        if (hitPoint.x % 1 == 0 && hitPoint.x < Camera.main.transform.position.x)
+        if (hitPoint.z % 1 == 0 && hitPoint.z < Camera.main.transform.position.z)
         {
-            hitPoint -= new Vector3(0.5f, 0, 0);
+            hitPoint -= new Vector3(0, 0, 0.5f);
         }
 
         return new Vector3Int((int)hitPoint.x, (int)hitPoint.z, (int)hitPoint.y);
