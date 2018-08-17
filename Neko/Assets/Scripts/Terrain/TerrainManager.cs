@@ -72,8 +72,7 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
         {
             for (var y = 0; y < ChunksCount.y; y++)
             {
-                var neighbourChunks = GetNeighbourChunks(new Vector2Int(x, y));
-                if (_chunks[x, y].UpdateMesh(neighbourChunks))
+                if (_chunks[x, y].UpdateMesh())
                 {
                     updatedChunks++;
                 }
@@ -108,8 +107,10 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
         {
             for (var y = 0; y < ChunksCount.y; y++)
             {
-                var neighbourChunks = GetNeighbourChunks(new Vector2Int(x, y));
-                _chunks[x, y].UpdateMesh(neighbourChunks);
+                var chunk = _chunks[x, y];
+
+                chunk.NeighbourChunks = GetNeighbourChunks(new Vector2Int(x, y));
+                chunk.UpdateMesh();
             }
         }
     }

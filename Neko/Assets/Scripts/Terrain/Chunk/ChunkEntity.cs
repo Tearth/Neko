@@ -3,11 +3,13 @@ using UnityEngine;
 
 public class ChunkEntity : MonoBehaviour
 {
+    public bool Modified;
+    public ChunkEntity[] NeighbourChunks;
+
     private VoxelBuilder _voxelBuilder;
     private TerrainGenerator _terrainGenerator;
 
     private VoxelEntity[,,] _voxels;
-    private bool _modified;
 
     private Vector2Int _position;
     private Vector2Int _chunksCount;
@@ -34,15 +36,15 @@ public class ChunkEntity : MonoBehaviour
         _noiseScale = noiseScale;
 
         _voxels = _terrainGenerator.Generate(_position, _chunksCount, _height, _size, _baseHeight, _maxHeight, _noiseScale);
-        _modified = true;
+        Modified = true;
     }
 
-    public bool UpdateMesh(ChunkEntity[] neighbourChunks)
+    public bool UpdateMesh()
     {
-        if (_modified)
+        if (Modified)
         {
-            UpdateMeshData(neighbourChunks);
-            _modified = false;
+            UpdateMeshData();
+            Modified = false;
 
             return true;
         }
@@ -60,7 +62,12 @@ public class ChunkEntity : MonoBehaviour
         if (_voxels[coordinates.x, coordinates.y, coordinates.z] != null)
         {
             _voxels[coordinates.x, coordinates.y, coordinates.z] = null;
-            _modified = true;
+            Modified = true;
+
+            if (coordinates.x == 0 || coordinates.x == _size - 1 || coordinates.y == 0 || coordinates.y == _size - 1)
+            {
+                UpdateNeighbourChunks(coordinates);
+            }
 
             return true;
         }
@@ -68,7 +75,30 @@ public class ChunkEntity : MonoBehaviour
         return false;
     }
 
-    private void UpdateMeshData(ChunkEntity[] neighbourChunks)
+    private void UpdateNeighbourChunks(Vector3Int coordinates)
+    {
+        if (NeighbourChunks[0] != null && coordinates.x == 0)
+        {
+            NeighbourChunks[0].Modified = true;
+        }
+
+        if (NeighbourChunks[1] != null && coordinates.x == _size - 1)
+        {
+            NeighbourChunks[1].Modified = true;
+        }
+
+        if (NeighbourChunks[2] != null && coordinates.y == 0)
+        {
+            NeighbourChunks[2].Modified = true;
+        }
+
+        if (NeighbourChunks[3] != null && coordinates.y == _size - 1)
+        {
+            NeighbourChunks[3].Modified = true;
+        }
+    }
+
+    private void UpdateMeshData()
     {
         var vertices = new List<Vector3>();
         var triangles = new List<int>();
@@ -86,24 +116,24 @@ public class ChunkEntity : MonoBehaviour
                     {
                         voxelData.Visibility = GetVisibilityData(x, y, z);
 
-                        if (x == 0 && neighbourChunks[0] != null)
+                        if (x == 0 && NeighbourChunks[0] != null)
                         {
-                            voxelData.Visibility.Left = neighbourChunks[0]._voxels[_size - 1, y, z] == null;
+                            voxelData.Visibility.Left = NeighbourChunks[0]._voxels[_size - 1, y, z] == null;
                         }
 
-                        if (x == _size - 1 && neighbourChunks[1] != null)
+                        if (x == _size - 1 && NeighbourChunks[1] != null)
                         {
-                            voxelData.Visibility.Right = neighbourChunks[1]._voxels[0, y, z] == null;
+                            voxelData.Visibility.Right = NeighbourChunks[1]._voxels[0, y, z] == null;
                         }
 
-                        if (y == 0 && neighbourChunks[2] != null)
+                        if (y == 0 && NeighbourChunks[2] != null)
                         {
-                            voxelData.Visibility.Back = neighbourChunks[2]._voxels[x, _size - 1, z] == null;
+                            voxelData.Visibility.Back = NeighbourChunks[2]._voxels[x, _size - 1, z] == null;
                         }
 
-                        if (y == _size - 1 && neighbourChunks[3] != null)
+                        if (y == _size - 1 && NeighbourChunks[3] != null)
                         {
-                            voxelData.Visibility.Front = neighbourChunks[3]._voxels[x, 0, z] == null;
+                            voxelData.Visibility.Front = NeighbourChunks[3]._voxels[x, 0, z] == null;
                         }
 
                         _voxelBuilder.Position = new Vector3(x, z, y);
