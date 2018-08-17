@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class CameraEntity : MonoBehaviour
+public class CameraMovement : MonoBehaviour
 {
     public float MoveSpeed;
     public float MoveSmoothRatio;
@@ -11,10 +11,9 @@ public class CameraEntity : MonoBehaviour
     private Vector3 _targetPosition;
     private float _targetFieldOfView;
 
-    private void Awake()
+    private void Start()
     {
         _camera = gameObject.GetComponent<Camera>();
-
         _targetPosition = gameObject.transform.position;
         _targetFieldOfView = _camera.fieldOfView;
     }

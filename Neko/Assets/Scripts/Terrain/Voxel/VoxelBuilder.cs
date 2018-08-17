@@ -4,7 +4,12 @@ using UnityEngine;
 public class VoxelBuilder
 {
     public Vector3 Position { get; set; }
-    public VoxelVisibilityData Visibility { get; set; }
+    public bool TopFace { get; set; }
+    public bool BottomFace { get; set; }
+    public bool FrontFace { get; set; }
+    public bool BackFace { get; set; }
+    public bool RightFace { get; set; }
+    public bool LeftFace { get; set; }
     public VoxelType TextureType { get; set; }
 
     private const int MaxTextureTypesCount = 2;
@@ -19,37 +24,37 @@ public class VoxelBuilder
     public void GenerateAndAddToLists(List<Vector3> vertices, List<int> triangles, List<Vector2> uv)
     {
         var squareCount = vertices.Count / 4;
-        if (Visibility.Top)
+        if (TopFace)
         {
             GenerateTopFace(vertices, triangles, uv, squareCount);
             squareCount++;
         }
 
-        if (Visibility.Bottom)
+        if (BottomFace)
         {
             GenerateBottomFace(vertices, triangles, uv, squareCount);
             squareCount++;
         }
 
-        if (Visibility.Front)
+        if (FrontFace)
         {
             GenerateFrontFace(vertices, triangles, uv, squareCount);
             squareCount++;
         }
 
-        if (Visibility.Back)
+        if (BackFace)
         {
             GenerateBackFace(vertices, triangles, uv, squareCount);
             squareCount++;
         }
 
-        if (Visibility.Right)
+        if (RightFace)
         {
             GenerateRightFace(vertices, triangles, uv, squareCount);
             squareCount++;
         }
 
-        if (Visibility.Left)
+        if (LeftFace)
         {
             GenerateLeftFace(vertices, triangles, uv, squareCount);
             squareCount++;
@@ -59,7 +64,12 @@ public class VoxelBuilder
     public void Reset()
     {
         Position = Vector3.zero;
-        Visibility = null;
+        TopFace = false;
+        BottomFace = false;
+        FrontFace = false;
+        BackFace = false;
+        RightFace = false;
+        LeftFace = false;
         TextureType = 0;
     }
 
