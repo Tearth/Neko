@@ -9,8 +9,8 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
     public int BaseTerrainHeight;
     public int MaxTerrainHeight;
     public float PerlinNoiseScale;
-    public GameObject Chunk;
-    public GameObject Voxel;
+    public GameObject ChunkPrefab;
+    public GameObject VoxelPrefab;
 
     private ChunkEntity[,] _chunks;
 
@@ -90,7 +90,7 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
         {
             for (var y = 0; y < ChunksCount.y; y++)
             {
-                var chunk = Instantiate(Chunk, new Vector3(x * ChunkSize, 0, y * ChunkSize), Quaternion.identity, gameObject.transform);
+                var chunk = Instantiate(ChunkPrefab, new Vector3(x * ChunkSize, 0, y * ChunkSize), Quaternion.identity, gameObject.transform);
 
                 var chunkScript = chunk.GetComponent<ChunkEntity>();
                 chunkScript.GenerateTerrainData(new Vector2Int(x, y), ChunksCount, SpaceHeight, BaseTerrainHeight, MaxTerrainHeight, ChunkSize, PerlinNoiseScale);

@@ -41,26 +41,27 @@ public class TerrainGenerator
 
     private float GetEdgeRatio(Vector2Int chunkPosition, int voxelX, int voxelY, Vector2Int chunksCount, int size)
     {
-        var edgeRatios = new EdgeRatios();
+        var xRatio = 1f;
+        var yRatio = 1f;
 
         if (chunkPosition.x == 0)
         {
-            edgeRatios.XRatio = (float)voxelX / size;
+            xRatio = (float)voxelX / size;
         }
         else if (chunkPosition.x == chunksCount.x - 1)
         {
-            edgeRatios.XRatio= 1 - (float)voxelX / size;
+            xRatio = 1 - (float)voxelX / size;
         }
 
         if (chunkPosition.y == 0)
         {
-            edgeRatios.YRatio = (float)voxelY / size;
+            yRatio = (float)voxelY / size;
         }
         else if (chunkPosition.y == chunksCount.y - 1)
         {
-            edgeRatios.YRatio = 1 - (float)voxelY / size;
+            yRatio = 1 - (float)voxelY / size;
         }
 
-        return edgeRatios.XRatio * edgeRatios.YRatio;
+        return xRatio * yRatio;
     }
 }
