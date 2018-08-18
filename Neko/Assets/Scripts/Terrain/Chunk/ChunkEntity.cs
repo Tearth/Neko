@@ -1,8 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ChunkEntity : MonoBehaviour
 {
+    public int PreferredTreeCount;
+    public int MinimalTreeHeight;
+    public int MinimalDistanceBetweenTrees;
+
     public bool Modified;
     public ChunkEntity[] NeighbourChunks;
     public GameObject TreePrefab;
@@ -45,15 +50,19 @@ public class ChunkEntity : MonoBehaviour
     {
         _trees = new List<TreeEntity>();
 
-        for (int i = 0; i < 15; i++)
+        for (int i = 0; i < PreferredTreeCount; i++)
         {
             var position = new Vector2Int(Random.Range(0, _size - 1), Random.Range(0, _size - 1));
             var treeCoordinates = new Vector3Int(position.x, GetHighestPoint(position), position.y);
+            var trueCoordinates = treeCoordinates + new Vector3Int(_size * _position.x, 0, _size * _position.y);
 
-            if (treeCoordinates.y > 8)
+            if (treeCoordinates.y > MinimalTreeHeight && !globalTreeList.Any(p => Vector3.Distance(p.transform.position, trueCoordinates) < MinimalDistanceBetweenTrees))
             {
-                var trueCoordinates = treeCoordinates + new Vector3Int(_size * _position.x, 0, _size * _position.y);
-                Instantiate(TreePrefab, trueCoordinates, Quaternion.identity, transform);
+                var gameObject = Instantiate(TreePrefab, trueCoordinates, Quaternion.identity, transform);
+                var treeEntity = gameObject.GetComponent<TreeEntity>();
+
+                _trees.Add(treeEntity);
+                globalTreeList.Add(treeEntity);
             }
         }
     }

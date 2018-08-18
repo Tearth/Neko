@@ -110,6 +110,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75251a7c1cdff41418d039e2afe363a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PreferredTreeCount: 15
+  MinimalTreeHeight: 7
+  MinimalDistanceBetweenTrees: 4
   Modified: 0
   NeighbourChunks: []
   TreePrefab: {fileID: 1975599125749474, guid: d15ad63974d7fba4093d077da0b6b3e0, type: 2}
