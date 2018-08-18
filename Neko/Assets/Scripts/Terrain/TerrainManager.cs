@@ -126,6 +126,7 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
             }
         }
 
+        var globalTreeList = new List<TreeEntity>();
         for (var x = 0; x < ChunksCount.x; x++)
         {
             for (var y = 0; y < ChunksCount.y; y++)
@@ -134,6 +135,8 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
 
                 chunk.NeighbourChunks = GetNeighbourChunks(new Vector2Int(x, y));
                 chunk.UpdateMesh();
+
+                chunk.GenerateTrees(globalTreeList);
             }
         }
     }

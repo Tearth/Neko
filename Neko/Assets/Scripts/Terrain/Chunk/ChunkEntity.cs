@@ -5,11 +5,13 @@ public class ChunkEntity : MonoBehaviour
 {
     public bool Modified;
     public ChunkEntity[] NeighbourChunks;
+    public GameObject TreePrefab;
 
     private VoxelBuilder _voxelBuilder;
     private TerrainGenerator _terrainGenerator;
 
-    private VoxelEntity[,,] _voxels;
+    private VoxelData[,,] _voxels;
+    private List<TreeEntity> _trees;
 
     private Vector2Int _position;
     private Vector2Int _chunksCount;
@@ -39,6 +41,23 @@ public class ChunkEntity : MonoBehaviour
         Modified = true;
     }
 
+    public void GenerateTrees(List<TreeEntity> globalTreeList)
+    {
+        _trees = new List<TreeEntity>();
+
+        for (int i = 0; i < 15; i++)
+        {
+            var position = new Vector2Int(Random.Range(0, _size - 1), Random.Range(0, _size - 1));
+            var treeCoordinates = new Vector3Int(position.x, GetHighestPoint(position), position.y);
+
+            if (treeCoordinates.y > 8)
+            {
+                var trueCoordinates = treeCoordinates + new Vector3Int(_size * _position.x, 0, _size * _position.y);
+                Instantiate(TreePrefab, trueCoordinates, Quaternion.identity, transform);
+            }
+        }
+    }
+
     public bool UpdateMesh()
     {
         if (Modified)
@@ -52,16 +71,29 @@ public class ChunkEntity : MonoBehaviour
         return false;
     }
 
-    public VoxelEntity GetVoxel(Vector3Int coordinates)
+    public VoxelData GetVoxel(Vector3Int coordinates)
     {
         return _voxels[coordinates.x, coordinates.y, coordinates.z];
+    }
+
+    public int GetHighestPoint(Vector2Int coordinates)
+    {
+        for (var z = 0; z < _height; z++)
+        {
+            if (_voxels[coordinates.x, coordinates.y, z] == null)
+            {
+                return z;
+            }
+        }
+
+        return -1;
     }
 
     public bool AddVoxel(Vector3Int coordinates)
     {
         if (_voxels[coordinates.x, coordinates.y, coordinates.z] == null)
         {
-            _voxels[coordinates.x, coordinates.y, coordinates.z] = new VoxelEntity
+            _voxels[coordinates.x, coordinates.y, coordinates.z] = new VoxelData
             {
                 Visibility = GetVisibilityData(coordinates.x, coordinates.y, coordinates.z),
                 Type = VoxelType.Dirt

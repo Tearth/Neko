@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class TerrainGenerator
 {
-    public VoxelEntity[,,] Generate(Vector2Int position, Vector2Int chunksCount, int height, int size, int baseHeight, int maxHeight, float noiseScale)
+    public VoxelData[,,] Generate(Vector2Int position, Vector2Int chunksCount, int height, int size, int baseHeight, int maxHeight, float noiseScale)
     {
-        var heightMap = new VoxelEntity[size, size, height];
+        var heightMap = new VoxelData[size, size, height];
 
         var perlinXPos = position.x * noiseScale;
         var perlinYPos = position.y * noiseScale;
@@ -21,14 +21,14 @@ public class TerrainGenerator
 
                 var topVoxelHeight = (int)((Mathf.Clamp(Mathf.PerlinNoise(perlinX, perlinY), 0, 1) * maxHeight) * edgeRatio) + baseHeight;
 
-                var topVoxelData = new VoxelEntity();
+                var topVoxelData = new VoxelData();
                 topVoxelData.Type = topVoxelHeight > 7 ? VoxelType.Dirt : VoxelType.Sand;
 
                 heightMap[x, y, topVoxelHeight] = topVoxelData;
 
                 for (var z = 0; z < topVoxelHeight; z++)
                 {
-                    var voxelData = new VoxelEntity();
+                    var voxelData = new VoxelData();
                     voxelData.Type = VoxelType.Sand;
 
                     heightMap[x, y, z] = voxelData;
