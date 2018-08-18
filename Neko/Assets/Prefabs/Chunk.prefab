@@ -115,4 +115,7 @@ MonoBehaviour:
   MinimalDistanceBetweenTrees: 4
   Modified: 0
   NeighbourChunks: []
-  TreePrefab: {fileID: 1975599125749474, guid: d15ad63974d7fba4093d077da0b6b3e0, type: 2}
+  TreePrefabs:
+  - {fileID: 1975599125749474, guid: d15ad63974d7fba4093d077da0b6b3e0, type: 2}
+  - {fileID: 1940017912862490, guid: f269e1ded3577264d8014c072071d062, type: 2}
+  - {fileID: 1750854102761144, guid: cca7bad40e22b384a87906d710e2a72d, type: 2}

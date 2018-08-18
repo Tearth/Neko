@@ -10,7 +10,7 @@ public class ChunkEntity : MonoBehaviour
 
     public bool Modified;
     public ChunkEntity[] NeighbourChunks;
-    public GameObject TreePrefab;
+    public List<GameObject> TreePrefabs;
 
     private VoxelBuilder _voxelBuilder;
     private TerrainGenerator _terrainGenerator;
@@ -52,13 +52,15 @@ public class ChunkEntity : MonoBehaviour
 
         for (int i = 0; i < PreferredTreeCount; i++)
         {
-            var position = new Vector2Int(Random.Range(0, _size - 1), Random.Range(0, _size - 1));
-            var treeCoordinates = new Vector3Int(position.x, GetHighestPoint(position), position.y);
-            var trueCoordinates = treeCoordinates + new Vector3Int(_size * _position.x, 0, _size * _position.y);
+            var position = new Vector2Int(Random.Range(0, _size), Random.Range(0, _size));
+            var treeChunkCoordinates = new Vector3Int(position.x, GetHighestPoint(position), position.y);
+            var treeWorldCoordinates = treeChunkCoordinates + new Vector3Int(_size * _position.x, 0, _size * _position.y);
 
-            if (treeCoordinates.y > MinimalTreeHeight && !globalTreeList.Any(p => Vector3.Distance(p.transform.position, trueCoordinates) < MinimalDistanceBetweenTrees))
+            if (treeChunkCoordinates.y > MinimalTreeHeight && !globalTreeList.Any(p => Vector3.Distance(p.transform.position, treeWorldCoordinates) < MinimalDistanceBetweenTrees))
             {
-                var gameObject = Instantiate(TreePrefab, trueCoordinates, Quaternion.identity, transform);
+                var treePrefab = TreePrefabs[Random.Range(0, TreePrefabs.Count)];
+
+                var gameObject = Instantiate(treePrefab, treeWorldCoordinates, Quaternion.identity, transform);
                 var treeEntity = gameObject.GetComponent<TreeEntity>();
 
                 _trees.Add(treeEntity);
