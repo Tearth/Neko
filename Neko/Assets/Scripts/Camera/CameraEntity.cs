@@ -65,8 +65,6 @@ public class CameraEntity : MonoBehaviour
         }
     }
 
-    private float x, y;
-
     private void HandleCameraRotation()
     {
         if (UnityEngine.Input.GetMouseButton(1))

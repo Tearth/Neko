@@ -57,6 +57,30 @@ public class ChunkEntity : MonoBehaviour
         return _voxels[coordinates.x, coordinates.y, coordinates.z];
     }
 
+    public bool AddVoxel(Vector3Int coordinates)
+    {
+        if (_voxels[coordinates.x, coordinates.y, coordinates.z] == null)
+        {
+            _voxels[coordinates.x, coordinates.y, coordinates.z] = new VoxelEntity
+            {
+                Visibility = GetVisibilityData(coordinates.x, coordinates.y, coordinates.z),
+                Type = VoxelType.Dirt
+            };
+
+            Modified = true;
+            UpdateNeighbourVoxels(coordinates, false);
+
+            if (coordinates.x == 0 || coordinates.x == _size - 1 || coordinates.y == 0 || coordinates.y == _size - 1)
+            {
+                UpdateNeighbourChunks(coordinates);
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     public bool RemoveVoxel(Vector3Int coordinates)
     {
         if (_voxels[coordinates.x, coordinates.y, coordinates.z] != null)

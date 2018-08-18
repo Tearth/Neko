@@ -254,7 +254,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveSpeed: 20
   FastMoveSpeed: 50
-  ZoomSpeed: 300
+  ZoomSpeed: 600
   RotationSpeed: 170
 --- !u!1 &1101642222
 GameObject:

@@ -24,7 +24,7 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
 
     }
 
-    public Vector3Int GetVoxelCoordinatesByHitPoint(Vector3 hitPoint)
+    public Vector3Int GetInsideVoxelCoordinatesByHitPoint(Vector3 hitPoint)
     {
         if (hitPoint.x % 1 == 0 && hitPoint.x < Camera.main.transform.position.x)
         {
@@ -44,6 +44,21 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
         return new Vector3Int((int)hitPoint.x, (int)hitPoint.z, (int)hitPoint.y);
     }
 
+    public Vector3Int GetOutsideVoxelCoordinatesByHitPoint(Vector3 hitPoint)
+    {
+        if (hitPoint.x % 1 == 0 && hitPoint.x > Camera.main.transform.position.x)
+        {
+            hitPoint -= new Vector3(0.5f, 0, 0);
+        }
+
+        if (hitPoint.z % 1 == 0 && hitPoint.z > Camera.main.transform.position.z)
+        {
+            hitPoint -= new Vector3(0, 0, 0.5f);
+        }
+
+        return new Vector3Int((int)hitPoint.x, (int)hitPoint.z, (int)hitPoint.y);
+    }
+
     public ChunkEntity GetChunkByVoxelCoordinates(Vector3Int voxelCoordinates)
     {
         var chunkX = voxelCoordinates.x / ChunkSize;
@@ -55,6 +70,14 @@ public class TerrainManager : MonoBehaviourSingleton<TerrainManager>
         }
 
         return null;
+    }
+
+    public bool AddVoxel(Vector3Int position)
+    {
+        var chunk = GetChunkByVoxelCoordinates(position);
+        var normalizedPosition = NormalizePosition(position);
+
+        return chunk.AddVoxel(normalizedPosition);
     }
 
     public bool RemoveVoxel(Vector3Int position)
