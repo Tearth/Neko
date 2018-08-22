@@ -110,7 +110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75251a7c1cdff41418d039e2afe363a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PreferredTreeCount: 0
+  PreferredTreeCount: 10
   MinimalTreeHeight: 7
   MinimalDistanceBetweenTrees: 4
   Modified: 0
